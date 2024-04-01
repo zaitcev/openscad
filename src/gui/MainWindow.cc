@@ -483,6 +483,7 @@ MainWindow::MainWindow(const QStringList& filenames)
   connect(this->fileActionExportSVG, SIGNAL(triggered()), this, SLOT(actionExportSVG()));
   connect(this->fileActionExportPDF, SIGNAL(triggered()), this, SLOT(actionExportPDF()));
   connect(this->fileActionExportCSG, SIGNAL(triggered()), this, SLOT(actionExportCSG()));
+  connect(this->fileActionExportSTEP, SIGNAL(triggered()), this, SLOT(actionExportSTEP()));
   connect(this->fileActionExportImage, SIGNAL(triggered()), this, SLOT(actionExportImage()));
   connect(this->designActionFlushCaches, SIGNAL(triggered()), this, SLOT(actionFlushCaches()));
 
@@ -637,6 +638,8 @@ MainWindow::MainWindow(const QStringList& filenames)
   initActionIcon(fileActionExportDXF, ":/icons/svg-default/export-dxf.svg", ":/icons/svg-default/export-dxf-white.svg");
   initActionIcon(fileActionExportSVG, ":/icons/svg-default/export-svg.svg", ":/icons/svg-default/export-svg-white.svg");
   initActionIcon(fileActionExportCSG, ":/icons/svg-default/export-csg.svg", ":/icons/svg-default/export-csg-white.svg");
+  // XXX We don't have an icon for STEP yet.
+  // initActionIcon(fileActionExportSTEP, ":/icons/svg-default/export-step.svg", ":/icons/svg-default/export-step-white.svg");
   initActionIcon(fileActionExportPDF, ":/icons/svg-default/export-pdf.svg", ":/icons/svg-default/export-pdf-white.svg");
   initActionIcon(fileActionExportImage, ":/icons/svg-default/export-png.svg", ":/icons/svg-default/export-png-white.svg");
   initActionIcon(viewActionViewAll, ":/icons/svg-default/zoom-all.svg", ":/icons/svg-default/zoom-all-white.svg");
@@ -2813,6 +2816,39 @@ void MainWindow::actionExportCSG()
     fstream.close();
     fileExportedMessage("CSG", csg_filename);
     this->export_paths[suffix] = csg_filename;
+  }
+
+  clearCurrentOutput();
+}
+
+void MainWindow::actionExportSTEP()
+{
+  setCurrentOutput();
+
+  if (!this->root_node) {
+    LOG(message_group::Error, "Nothing to export. Please try compiling first.");
+    clearCurrentOutput();
+    return;
+  }
+  const auto suffix = ".step";
+  // How to allow both .stp and .step? XXX
+  auto step_filename = QFileDialog::getSaveFileName(this,
+                                                    _("Export STEP File"),
+                                                    exportPath(suffix),
+                                                    _("STEP Files (*.step)"));
+  if (step_filename.isEmpty()) {
+    clearCurrentOutput();
+    return;
+  }
+
+  std::ofstream fstream(step_filename.toLocal8Bit());
+  if (!fstream.is_open()) {
+    LOG("Can't open file \"%1$s\" for export", step_filename.toLocal8Bit().constData());
+  } else {
+    export_step(*this->root_node, fstream);
+    fstream.close();
+    fileExportedMessage("STEP", step_filename);
+    this->export_paths[suffix] = step_filename;
   }
 
   clearCurrentOutput();

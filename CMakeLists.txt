@@ -762,6 +762,7 @@ set(CORE_SOURCES
   src/io/export_stl.cc
   src/io/export_svg.cc
   src/io/export_param.cc
+  src/io/export_step.cc
   src/io/fileutils.cc
   src/io/import_3mf.cc
   src/io/import_amf.cc

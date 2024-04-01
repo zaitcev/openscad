@@ -264,6 +264,7 @@ private slots:
   void actionExportSVG();
   void actionExportPDF();
   void actionExportCSG();
+  void actionExportSTEP();
   void actionExportImage();
   void actionCopyViewport();
   void actionFlushCaches();
