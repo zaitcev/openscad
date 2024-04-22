@@ -112,8 +112,7 @@ void export_svg(const std::shared_ptr<const Geometry>& geom, std::ostream& outpu
 void export_pdf(const std::shared_ptr<const Geometry>& geom, std::ostream& output, const ExportInfo& exportInfo);
 void export_nefdbg(const std::shared_ptr<const Geometry>& geom, std::ostream& output);
 void export_nef3(const std::shared_ptr<const Geometry>& geom, std::ostream& output);
-void export_step(const AbstractNode& node, std::ostream& output);
-
+void export_step(const std::shared_ptr<const AbstractNode>& node, std::ostream& output);
 
 enum class Previewer { OPENCSG, THROWNTOGETHER };
 enum class RenderType { GEOMETRY, BACKEND_SPECIFIC, OPENCSG, THROWNTOGETHER };

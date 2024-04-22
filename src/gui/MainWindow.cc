@@ -2845,7 +2845,8 @@ void MainWindow::actionExportSTEP()
   if (!fstream.is_open()) {
     LOG("Can't open file \"%1$s\" for export", step_filename.toLocal8Bit().constData());
   } else {
-    export_step(*this->root_node, fstream);
+    assert(this->root_node);
+    export_step(this->root_node, fstream);
     fstream.close();
     fileExportedMessage("STEP", step_filename);
     this->export_paths[suffix] = step_filename;
